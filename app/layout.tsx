@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
 import "../styles/tokens.css";
 import "./globals.css";
@@ -21,7 +21,12 @@ export const metadata: Metadata = {
   title: "NIGHTGLASS · Tonight's sky at your location",
   description:
     "Nightglass turns tonight's sky at your location into an explorable constellation map — what you can see and when the clouds will clear.",
-  viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
