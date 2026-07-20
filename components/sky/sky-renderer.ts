@@ -12,12 +12,12 @@ import type {
 } from "@/lib/astronomy/types";
 import type { VisibilityState } from "@/lib/weather/types";
 
-/** Star size from magnitude — clamp 0.4..3.2 px-ish radius in dome units. */
-export function starRadius(star: Star, domeSize: number): number {
+/** Star size from magnitude — return radius in dome units (1.0 = full dome radius). */
+export function starRadius(star: Star): number {
   const m = star.magnitude;
-  // Map magnitude -1.5 ( brightest) → large, +3 → small.
+  // Map magnitude -1.5 (brightest) → ~0.012, +3 → ~0.002 in dome units.
   const norm = clamp((3.5 - m) / 5, 0, 1);
-  return 0.0025 + norm * 0.012 * domeSize;
+  return 0.0025 + norm * 0.01;
 }
 
 /** Star fill color derived from B-V color index. */
@@ -79,8 +79,7 @@ export interface RenderPrimitives {
 export function buildPrimitives(
   snap: SkySnapshot,
   visibility: VisibilityState,
-  rotation: number,
-  domeSize: number
+  rotation: number
 ): RenderPrimitives {
   const cos = Math.cos(rotation);
   const sin = Math.sin(rotation);
@@ -97,7 +96,7 @@ export function buildPrimitives(
       star: ps.star,
       x,
       y,
-      r: starRadius(ps.star, domeSize),
+      r: starRadius(ps.star),
       fill: starFill(ps.star),
       aboveHorizon: ps.aboveHorizon,
     };
@@ -128,7 +127,7 @@ export function buildPrimitives(
     return {
       x,
       y,
-      radius: domeSize * 0.03,
+      radius: 0.04,
       illumination: snap.moon.illumination,
       phase: snap.moon.phase,
       aboveHorizon: snap.moon.aboveHorizon,

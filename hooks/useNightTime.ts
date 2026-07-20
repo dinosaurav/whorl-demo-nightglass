@@ -30,8 +30,20 @@ export interface NightTimeState {
 
 /** Manage the night window and the current scrub position for a site. */
 export function useNightTime(site: ObservingSite | null, baseUtcMs?: number): NightTimeState {
-  const [window, setWindow] = useState<NightWindow | null>(null);
-  const [time, setTime] = useState<number>(baseUtcMs ?? Date.now());
+  const [window, setWindow] = useState<NightWindow | null>(() => {
+    if (!site) return null;
+    try {
+      const base = baseUtcMs ?? Date.now();
+      const w = providers.astronomy.nightWindow(site, base);
+      return { start: w.start, end: w.end, duration: w.end - w.start };
+    } catch {
+      return null;
+    }
+  });
+  const [time, setTime] = useState<number>(() => {
+    const base = baseUtcMs ?? Date.now();
+    return base;
+  });
 
   const refreshFor = (s: ObservingSite, base = baseUtcMs ?? Date.now()) => {
     const w = providers.astronomy.nightWindow(s, base);

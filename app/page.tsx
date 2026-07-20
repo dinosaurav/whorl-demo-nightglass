@@ -48,8 +48,20 @@ export default function Home() {
 
   // Snapshot + weather per current site & time.
   const [curve, setCurve] = useState<NightWeatherCurve | null>(null);
-  const [snapshot, setSnapshot] = useState<SkySnapshot | null>(null);
-  const [visibility, setVisibility] = useState<VisibilityState | null>(null);
+  const [snapshot, setSnapshot] = useState<SkySnapshot | null>(() => {
+    return providers.astronomy.skyAt(DEFAULT_SITE, Date.now());
+  });
+  const [visibility, setVisibility] = useState<VisibilityState | null>(() => {
+    const snap = providers.astronomy.skyAt(DEFAULT_SITE, Date.now());
+    return {
+      cloudOpacity: 0.3,
+      haze: 0.12,
+      moonWash: snap.moon.illumination,
+      precipRisk: 0.05,
+      clarity: 0.65,
+      mocked: true,
+    };
+  });
   const [scrubbing, setScrubbing] = useState(false);
   const computeTimer = useRef<number | null>(null);
 

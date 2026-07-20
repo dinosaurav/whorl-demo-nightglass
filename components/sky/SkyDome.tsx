@@ -40,7 +40,6 @@ export default function SkyDome({
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [pointerActive, setPointerActive] = useState(false);
   const [hoverId, setHoverId] = useState<string | null>(null);
-  const [domeSize, setDomeSize] = useState(600);
   const lastAngle = useRef<number | null>(null);
   const prefersReducedMotion = useRef(false);
 
@@ -50,25 +49,12 @@ export default function SkyDome({
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }, []);
 
-  // Observe container size for sizing star radii in dome units.
   const containerRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const el = containerRef.current;
-    const ro = new ResizeObserver((entries) => {
-      for (const e of entries) {
-        const s = Math.min(e.contentRect.width, e.contentRect.height);
-        setDomeSize(s || 600);
-      }
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
 
   const primitives: RenderPrimitives | null = useMemo(() => {
     if (!snapshot || !visibility) return null;
-    return buildPrimitives(snapshot, visibility, rotation, domeSize);
-  }, [snapshot, visibility, rotation, domeSize]);
+    return buildPrimitives(snapshot, visibility, rotation);
+  }, [snapshot, visibility, rotation]);
 
   // Compute the dome-space coords of a pointer event for hit-testing.
   const pointerToDome = useCallback((e: PointerEvent | React.PointerEvent): { x: number; y: number } | null => {
