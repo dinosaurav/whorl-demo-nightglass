@@ -1,0 +1,96 @@
+.toggleBtn {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 11;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  color: var(--accent-strong);
+  padding: 0.4rem 0.8rem;
+  border-radius: 9px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+.toggleBtn:hover { background: rgba(30, 60, 52, 0.5); color: var(--ink-100); }
+
+.wrap {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  width: min(300px, calc(100% - 2rem));
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 0.9rem 1rem 1rem;
+  backdrop-filter: blur(10px);
+  z-index: 11;
+  animation: routeIn 320ms var(--ease-out);
+}
+@keyframes routeIn { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.25rem;
+  margin: 0;
+  color: var(--star-bright);
+  letter-spacing: 0.02em;
+}
+.close {
+  background: transparent;
+  border: none;
+  color: var(--ink-50);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.3rem;
+}
+
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 0.7rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.steps li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding-left: 0.8rem;
+  border-left: 1px solid var(--accent-deep);
+}
+.stepTitle {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--accent-strong);
+  text-transform: uppercase;
+}
+.stepDetail {
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink-100);
+}
+
+.site {
+  margin: 0.8rem 0 0;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-30);
+}
+
+@media (max-width: 520px) {
+  .wrap { width: calc(100% - 2rem); }
+}

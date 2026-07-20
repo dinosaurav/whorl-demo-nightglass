@@ -1,0 +1,33 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.haze {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 110%,
+    rgba(180, 200, 220, 0.28) 0%,
+    rgba(120, 140, 170, 0.10) 30%,
+    rgba(0, 0, 0, 0) 60%
+  );
+  mix-blend-mode: screen;
+  transition: opacity 500ms var(--ease-out);
+}
+.moonWash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 35%,
+    rgba(242, 236, 210, 0.18) 0%,
+    rgba(242, 236, 210, 0.06) 30%,
+    rgba(0, 0, 0, 0) 60%
+  );
+  transition: opacity 600ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .haze, .moonWash { transition-duration: 1ms; }
+}

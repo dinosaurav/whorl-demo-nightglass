@@ -1,0 +1,107 @@
+.panel {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: min(340px, calc(100% - 2rem));
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 1.1rem 1.2rem 1.2rem;
+  backdrop-filter: blur(10px);
+  z-index: 12;
+  animation: slideIn 360ms var(--ease-out);
+}
+@keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+.abbr {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  color: var(--accent-strong);
+  text-transform: uppercase;
+}
+.name {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 500;
+  margin: 0.1rem 0 0;
+  color: var(--star-bright);
+  letter-spacing: 0.01em;
+}
+.longName {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--ink-50);
+  text-transform: uppercase;
+}
+.close {
+  background: transparent;
+  border: none;
+  color: var(--ink-50);
+  cursor: pointer;
+  font-size: 1.6rem;
+  line-height: 1;
+  padding: 0 0.3rem;
+}
+.close:hover { color: var(--star-bright); }
+
+.facing {
+  margin-top: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  background: rgba(143, 214, 193, 0.08);
+  border: 1px solid rgba(143, 214, 193, 0.24);
+  border-radius: 9px;
+}
+.facingIcon {
+  color: var(--accent-strong);
+  font-size: 10px;
+}
+.facingText {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--star-bright);
+}
+
+.blurb {
+  margin: 0.9rem 0 0.8rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--ink-100);
+}
+
+.stars {
+  list-style: none;
+  padding: 0;
+  margin: 0.4rem 0 0;
+  border-top: 1px solid var(--panel-border);
+  padding-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.stars li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--ink-70);
+  letter-spacing: 0.04em;
+}
+.starName { color: var(--star-bright); }
+.starMag { color: var(--ink-50); font-variant-numeric: tabular-nums; }
+
+@media (max-width: 520px) {
+  .panel { top: auto; bottom: 1rem; right: 1rem; left: 1rem; width: auto; }
+}
