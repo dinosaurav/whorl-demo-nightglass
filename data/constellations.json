@@ -1,0 +1,173 @@
+{
+  "constellations": [
+    {
+      "id": "umi",
+      "abbreviation": "UMi",
+      "name": "Ursa Minor",
+      "longName": "The Little Bear",
+      "starIds": ["polaris", "kochab", "pherkad"],
+      "lines": [
+        { "fromStarId": "polaris", "toStarId": "kochab" },
+        { "fromStarId": "kochab", "toStarId": "pherkad" }
+      ],
+      "facingAz": 0,
+      "blurb": "Polaris anchors the little dipper. It sits almost exactly above the north pole — your anchor for finding everything else."
+    },
+    {
+      "id": "uma",
+      "abbreviation": "UMa",
+      "name": "Ursa Major",
+      "longName": "The Great Bear",
+      "starIds": ["dubhe", "merak", "phecda", "megrez", "alioth", "alizba", "alkaid"],
+      "lines": [
+        { "fromStarId": "dubhe", "toStarId": "merak" },
+        { "fromStarId": "merak", "toStarId": "phecda" },
+        { "fromStarId": "phecda", "toStarId": "megrez" },
+        { "fromStarId": "megrez", "toStarId": "dubhe" },
+        { "fromStarId": "megrez", "toStarId": "alioth" },
+        { "fromStarId": "alioth", "toStarId": "alizba" },
+        { "fromStarId": "alizba", "toStarId": "alkaid" }
+      ],
+      "facingAz": 0.78,
+      "blurb": "The Big Dipper's 'pointer stars' Dubhe and Merak line up to Polaris. Draw the line outward from the Dipper's bowl to find north."
+    },
+    {
+      "id": "ori",
+      "abbreviation": "Ori",
+      "name": "Orion",
+      "longName": "The Hunter",
+      "starIds": ["betelgeuse", "rigel", "bellatrix", "mintaka", "alnilam", "alnitak", "saiph"],
+      "lines": [
+        { "fromStarId": "betelgeuse", "toStarId": "bellatrix" },
+        { "fromStarId": "bellatrix", "toStarId": "mintaka" },
+        { "fromStarId": "mintaka", "toStarId": "alnilam" },
+        { "fromStarId": "alnilam", "toStarId": "alnitak" },
+        { "fromStarId": "alnitak", "toStarId": "rigel" },
+        { "fromStarId": "rigel", "toStarId": "saiph" },
+        { "fromStarId": "saiph", "toStarId": "betelgeuse" }
+      ],
+      "facingAz": 3.0,
+      "blurb": "Orion's belt — Mintaka, Alnilam, Alnitak — runs east–west. Down from the belt hangs the sword with the Orion Nebula."
+    },
+    {
+      "id": "lyr",
+      "abbreviation": "Lyr",
+      "name": "Lyra",
+      "longName": "The Lyre",
+      "starIds": ["vegastar"],
+      "lines": [],
+      "facingAz": 4.9,
+      "blurb": "Vega is the fifth-brightest star in the night sky and the northern anchor of the Summer Triangle."
+    },
+    {
+      "id": "aql",
+      "abbreviation": "Aql",
+      "name": "Aquila",
+      "longName": "The Eagle",
+      "starIds": ["altair"],
+      "lines": [],
+      "facingAz": 5.2,
+      "blurb": "Altair is the southern apex of the Summer Triangle, spinning rapidly just 17 light-years away."
+    },
+    {
+      "id": "cyg",
+      "abbreviation": "Cyg",
+      "name": "Cygnus",
+      "longName": "The Swan",
+      "starIds": ["denebstar"],
+      "lines": [],
+      "facingAz": 4.6,
+      "blurb": "Deneb marks the tail of the swan and the third corner of the Summer Triangle."
+    },
+    {
+      "id": "cma",
+      "abbreviation": "CMa",
+      "name": "Canis Major",
+      "longName": "The Greater Dog",
+      "starIds": ["sirius"],
+      "lines": [],
+      "facingAz": 1.7,
+      "blurb": "Sirius, the Dog Star, is the brightest star visible from Earth — a winter beacon south of Orion."
+    },
+    {
+      "id": "tau",
+      "abbreviation": "Tau",
+      "name": "Taurus",
+      "longName": "The Bull",
+      "starIds": ["aldebaran"],
+      "lines": [],
+      "facingAz": 1.2,
+      "blurb": "Aldebaran is the red eye of the bull, glowing through the V-shaped Hyades cluster."
+    },
+    {
+      "id": "aur",
+      "abbreviation": "Aur",
+      "name": "Auriga",
+      "longName": "The Charioteer",
+      "starIds": ["capella"],
+      "lines": [],
+      "facingAz": 1.4,
+      "blurb": "Capella is a yellow giant, the sixth-brightest star in the sky, high overhead on winter nights."
+    },
+    {
+      "id": "boo",
+      "abbreviation": "Boo",
+      "name": "Boötes",
+      "longName": "The Herdsman",
+      "starIds": ["arcturus"],
+      "lines": [],
+      "facingAz": 5.0,
+      "blurb": "Follow the Big Dipper's handle in an arc to Arcturus, an orange giant preparing to bloom."
+    },
+    {
+      "id": "sco",
+      "abbreviation": "Sco",
+      "name": "Scorpius",
+      "longName": "The Scorpion",
+      "starIds": ["antares"],
+      "lines": [],
+      "facingAz": 3.6,
+      "blurb": "Antares — the rival of Mars — is a red supergiant at the scorpion's heart."
+    },
+    {
+      "id": "vir",
+      "abbreviation": "Vir",
+      "name": "Virgo",
+      "longName": "The Maiden",
+      "starIds": ["spica"],
+      "lines": [],
+      "facingAz": 3.4,
+      "blurb": "Continue Arcturus' arc to Spica, a hot blue-white binary low in the south on spring nights."
+    },
+    {
+      "id": "cmi",
+      "abbreviation": "CMi",
+      "name": "Canis Minor",
+      "longName": "The Lesser Dog",
+      "starIds": ["procyon"],
+      "lines": [],
+      "facingAz": 2.0,
+      "blurb": "Procyon rises before Sirius and forms the third vertex of the Winter Triangle with Betelgeuse."
+    },
+    {
+      "id": "gem",
+      "abbreviation": "Gem",
+      "name": "Gemini",
+      "longName": "The Twins",
+      "starIds": ["castor", "pollux"],
+      "lines": [{ "fromStarId": "castor", "toStarId": "pollux" }],
+      "facingAz": 2.1,
+      "blurb": "Castor and Pollux are the twin heads, side by side, east of Auriga."
+    },
+    {
+      "id": "leo",
+      "abbreviation": "Leo",
+      "name": "Leo",
+      "longName": "The Lion",
+      "starIds": ["regulus", "denebola"],
+      "lines": [{ "fromStarId": "regulus", "toStarId": "denebola" }],
+      "facingAz": 2.7,
+      "blurb": "Regulus anchors the lion's heart; Denebola marks its tail. The sickle of Leo curves above Regulus."
+    }
+  ]
+}

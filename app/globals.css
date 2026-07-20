@@ -1,0 +1,24 @@
+:root {
+  --font-display: var(--font-display-loaded), "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-ui: var(--font-ui-loaded), "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+}
+
+.app-shell {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

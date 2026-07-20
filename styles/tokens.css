@@ -1,0 +1,84 @@
+:root {
+  /* Typography */
+  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-ui: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  /* Sky palette - deep night, no purple neon */
+  --sky-void: #050811;
+  --sky-deep: #0a1326;
+  --sky-mid: #16243f;
+  --sky-haze: #2a3a5c;
+  --horizon-glow: #4a5b7a;
+
+  /* Star / ink */
+  --star-bright: #f4f1e8;
+  --star-warm: #ffd9a3;
+  --star-cool: #cfe0ff;
+  --ink-100: #e8ecf3;
+  --ink-70: rgba(232, 236, 243, 0.7);
+  --ink-50: rgba(232, 236, 243, 0.5);
+  --ink-30: rgba(232, 236, 243, 0.3);
+  --ink-line: rgba(232, 236, 243, 0.18);
+
+  /* Accent - aurora teal, not purple */
+  --accent: #6fb9a8;
+  --accent-strong: #8fd6c1;
+  --accent-deep: #2f7f6e;
+
+  /* Moon / warm */
+  --moon: #f2ecd2;
+  --moon-glow: rgba(242, 236, 210, 0.18);
+
+  /* Constellation focus */
+  --focus-line: #f4f1e8;
+  --focus-glow: rgba(244, 241, 232, 0.5);
+
+  /* Cloud */
+  --cloud-veil: rgba(180, 190, 210, 0.0);
+
+  /* Surfaces */
+  --panel: rgba(8, 13, 24, 0.72);
+  --panel-border: rgba(232, 236, 243, 0.12);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-slow: 900ms;
+  --dur-med: 480ms;
+  --dur-fast: 180ms;
+
+  /* Layout */
+  --hero-pad: clamp(1.25rem, 4vw, 3.5rem);
+  --shell-max: 100%;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--sky-void);
+  color: var(--ink-100);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+body { min-height: 100dvh; }
+
+button, input { font-family: inherit; color: inherit; }
+
+a { color: var(--accent-strong); text-decoration: none; }
+a:hover { color: var(--ink-100); }
+
+::selection { background: var(--accent-deep); color: var(--ink-100); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
