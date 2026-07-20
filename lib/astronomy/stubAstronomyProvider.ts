@@ -1,6 +1,10 @@
 /**
  * Deterministic stub astronomy — good enough projection for v1, not planetarium-accurate.
- * Real astronomy engine (astronomy-engine) can replace this without touching UI.
+ *
+ * SWAP:[stub:astronomy] Replace this with `astronomy-engine`
+ * (https://github.com/cosinekitty/astronomy) — accurate positions & rise/set.
+ * Implement the same `AstronomyProvider` interface and swap in lib/providers.ts only.
+ * No UI edits required.
  */
 
 import type {

@@ -12,18 +12,23 @@ clouds will clear.
 
 ## Use this template
 
-This repo is private by design. To run locally:
+**Prefer “Use this template → private”** over forking — it gives you a clean
+repo with no upstream history, which is the right shape for the demo.
+
+To run locally:
 
 ```bash
-git clone <this-repo>
-cd nightglass
+# After creating your private repo from this template:
+git clone https://github.com/<you>/<your-repo>.git
+cd <your-repo>            # repo dir name (was whorl-demo-nightglass)
 bun install
 bun dev
 ```
 
 Then open http://localhost:3000.
 
-Requirements: Node 18+, bun (or npm/pnpm — adjust install commands).
+Requirements: **Node 18+** and **bun** (npm/pnpm work too — adjust the install
+command). `bun install && bun dev` is the only verified happy path.
 
 ## Stack
 
@@ -52,24 +57,25 @@ Requirements: Node 18+, bun (or npm/pnpm — adjust install commands).
 
 Each subtree has one owner — keep edits within your lane.
 
-| Lane | Files |
-|------|-------|
-| Shell / integration | `app/page.tsx`, `app/layout.tsx`, `app/page.module.css` |
-| Sky renderer | `components/sky/SkyDome.tsx`, `components/sky/sky-renderer.ts`, `WeatherLayer.tsx`, `LayerToggles.tsx` |
-| Astronomy domain | `lib/astronomy/*`, `data/stars.json`, `data/constellations.json` |
-| Timeline | `components/timeline/NightTimeline.tsx`, `hooks/useNightTime.ts`, `hooks/bestWindow.ts` |
+| Lane | Own |
+|------|-----|
+| Shell | `app/page.tsx`, `app/layout.tsx`, `app/page.module.css` |
+| Sky | `components/sky/*` |
+| Astronomy | `lib/astronomy/*`, `data/*.json` |
+| Timeline | `components/timeline/*`, `hooks/useNightTime.ts`, `hooks/bestWindow.ts` |
 | Location | `components/location/*`, `lib/location/*` |
 | Weather | `lib/weather/*` |
-| Objects / guide | `components/objects/*` |
-| Visual system | `app/globals.css`, `styles/tokens.css`, `components/brand/*` |
+| Objects | `components/objects/*` |
+| Brand | `styles/tokens.css`, `app/globals.css`, `components/brand/*` |
 
 ### Integration rules
 
 - **Shared types land first.** Each lane depends on `lib/*/types.ts` only —
   no cross-lane edits of owned files.
 - The **shell owns composition**, not logic — it pulls components together.
-- **UI never imports a specific API SDK** — only provider interfaces from
-  `lib/*/Provider.ts`. The single registry is `lib/providers.ts`.
+- **UI must keep going through `lib/providers.ts` only** — never import a
+  specific API SDK or a concrete `stub*Provider` directly. Do not collapse
+  the provider layer.
 - Default UI shows constellation lines + labels + timeline. Extra layers
   are opt-in toggles.
 
@@ -105,11 +111,20 @@ To swap stubs for real providers, edit `lib/providers.ts` only.
 
 ## Backlog (not blocking v1)
 
-- [ ] **Open-Meteo** hourly cloud / visibility / precip — replace `stubWeatherProvider`
+Each item is anchored to a `SWAP:[stub:…]` marker in code so Whorl can spawn
+`[stub:…]` / real tasks against a known path.
+
+- [ ] **Open-Meteo** hourly cloud / visibility / precip —
+      `SWAP:[stub:weather]` in `lib/weather/stubWeatherProvider.ts` →
+      implement `WeatherProvider`, swap in `lib/providers.ts` only.
 - [ ] **Astronomy Engine** (`astronomy-engine`) for accurate positions & rise/set —
-      replace `stubAstronomyProvider`
-- [ ] **Browser Geolocation + reverse geocode** for arbitrary sites
-- [ ] **Light-pollution dataset** — drive a horizon-glow layer per site
+      `SWAP:[stub:astronomy]` in `lib/astronomy/stubAstronomyProvider.ts`.
+- [ ] **Browser Geolocation + reverse geocode** for arbitrary sites —
+      `SWAP:[stub:location]` in `lib/location/stubLocationProvider.ts`.
+      (Browser geolocation already works via `requestBrowserLocation()`.)
+- [ ] **Light-pollution dataset** — optional `VisibilityState.lightPollution`
+      (already in the contract as an optional field). Drive a horizon-glow
+      layer per site without changing other fields.
 - [ ] Expanded star / DSO catalogs
 - [ ] Multi-night planner (explicitly **out of scope** for v1)
 

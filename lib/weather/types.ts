@@ -37,4 +37,11 @@ export interface VisibilityState {
   clarity: number;
   /** Mocked flag for honesty label. */
   mocked: boolean;
+  /**
+   * BACKLOG hook (optional, not required by v1 UI):
+   * Artificial sky brightness 0..1 from a light-pollution dataset.
+   * Stub providers leave this undefined; a real provider can populate it and
+   * the sky can paint a horizon glow without changing other fields.
+   */
+  lightPollution?: number;
 }

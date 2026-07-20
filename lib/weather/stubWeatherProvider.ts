@@ -2,6 +2,12 @@ import type { WeatherProvider } from "./WeatherProvider";
 import type { NightWeatherCurve, VisibilityState, WeatherSample } from "./types";
 import type { ObservingSite } from "../location/types";
 
+/**
+ * SWAP:[stub:weather] Replace with Open-Meteo hourly cloud/visibility/precip.
+ * Implement the same `WeatherProvider` interface; swap in lib/providers.ts only.
+ * Optional: drive a light-pollution term into VisibilityState via the same contract.
+ */
+
 /** Deterministic pseudo-random in 0..1 from integer seed. */
 function seeded(seed: number): () => number {
   let s = seed >>> 0 || 1;

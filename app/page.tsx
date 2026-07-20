@@ -168,16 +168,6 @@ export default function Home() {
         <p className={styles.stubFlag}>sample sky · stub weather</p>
       </section>
 
-      {/* Visibility panel — only base layer (no dashboard-y tiles) */}
-      <div className={styles.layerPane} aria-hidden={!!focused}>
-        <div className={styles.layerPaneInner}>
-          <span className={styles.layerPaneLabel}>tonight clarity</span>
-          <span className={styles.layerPaneValue}>
-            {visibility ? `${Math.round(visibility.clarity * 100)}%` : "—"}
-          </span>
-        </div>
-      </div>
-
       {/* Inspector once focused */}
       {snapshot && (
         <Inspector
@@ -227,8 +217,8 @@ export default function Home() {
                 <li>3 curated presets (Joshua Tree, Reykjavík, Brooklyn)</li>
                 <li>30 catalog stars + 15 constellations</li>
                 <li>Deterministic sky projection from lat + time</li>
-                <li>Stabbed hourly cloud curves per preset vibe</li>
-                <li>Darg-rotate dome, timeline scrub, focus isolate</li>
+                <li>Stubbed hourly cloud curves per preset vibe</li>
+                <li>Drag-rotate dome, timeline scrub, focus isolate</li>
               </ul>
             </div>
             <div>

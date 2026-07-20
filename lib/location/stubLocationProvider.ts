@@ -6,6 +6,13 @@ import type {
   ObservingSite,
 } from "./types";
 
+/**
+ * SWAP:[stub:location] Replace `search` with real reverse geocode
+ * (e.g. Open-Meteo geocoding / Nominatim) to support arbitrary queries.
+ * Browser geolocation already works via `requestBrowserLocation()`;
+ * presets are stubbed and intentionally curated.
+ */
+
 const PRESETS: LocationPreset[] = [
   {
     id: "joshua-tree",
