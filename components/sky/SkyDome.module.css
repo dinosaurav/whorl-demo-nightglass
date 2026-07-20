@@ -1,0 +1,124 @@
+.domeWrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+.svg.dragging { cursor: grabbing; }
+
+.star {
+  transition: r 480ms var(--ease-out), fill 320ms var(--ease-out);
+  will-change: transform;
+}
+.starTwinkle {
+  animation: twinkle 4.6s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+.dimmed { opacity: 0.18; transition: opacity 360ms var(--ease-out); }
+
+.constellationG {
+  transition: opacity 340ms var(--ease-out);
+}
+.constellationLine {
+  stroke: var(--ink-line);
+  stroke-width: 0.0035;
+  fill: none;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.constellationFocused .constellationLine {
+  stroke: var(--focus-line);
+  stroke-width: 0.0055;
+  filter: drop-shadow(0 0 0.02rem var(--focus-glow));
+}
+.constellationDim { opacity: 0.16; }
+
+.lineMorph {
+  animation: lineDraw 900ms var(--ease-out) both;
+}
+@keyframes lineDraw {
+  from { stroke-dashoffset: 0.18; stroke-dasharray: 0.18; opacity: 0; }
+  to { stroke-dasharray: 0.18 0; opacity: 1; }
+}
+
+.moonFloat {
+  animation: moonDrift 22s ease-in-out infinite alternate;
+}
+@keyframes moonDrift {
+  from { transform: translate(0, -0.0015); }
+  to { transform: translate(0.0015, 0); }
+}
+
+.cloudShift {
+  animation: cloudDrift 36s ease-in-out infinite alternate;
+}
+@keyframes cloudDrift {
+  from { transform: translate(-0.005, 0); }
+  to { transform: translate(0.005, 0); }
+}
+
+.constellationLabel {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.055;
+  fill: var(--star-bright);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.planetLabel {
+  font-family: var(--font-ui);
+  font-size: 0.022;
+  fill: var(--ink-70);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hoverG { mix-blend-mode: screen; }
+
+.horizonRing {
+  fill: none;
+  stroke: var(--ink-line);
+  stroke-width: 0.005;
+  vector-effect: non-scaling-stroke;
+}
+
+.cardinals {
+  font-family: var(--font-ui);
+  font-size: 0.05;
+  fill: var(--ink-50);
+  letter-spacing: 0.18em;
+  font-weight: 600;
+}
+
+.hint {
+  position: absolute;
+  bottom: 1em;
+  right: 1.2em;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-30);
+  pointer-events: none;
+  z-index: 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .starTwinkle, .lineMorph, .moonFloat, .cloudShift { animation: none !important; }
+}
