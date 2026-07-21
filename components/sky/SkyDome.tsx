@@ -111,7 +111,9 @@ export default function SkyDome({
           let d = ang - prev;
           if (d > Math.PI) d -= Math.PI * 2;
           if (d < -Math.PI) d += Math.PI * 2;
-          onChangeRotation(rotation + d);
+          // Negate so the sky is dragged-along with the pointer (like grabbing a
+// physical wheel) rather than counter-rotating against it.
+onChangeRotation(rotation - d);
           lastAngle.current = ang;
         }
       } else if (!scrubbing) {
