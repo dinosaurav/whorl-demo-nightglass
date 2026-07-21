@@ -70,6 +70,35 @@ const CONSTELLATIONS: Constellation[] = (
   blurb: c.blurb ?? null,
 }));
 
+/** Procedurally generated faint field stars — deterministic, dense enough to
+ *  make the dome feel like a sky. Real catalogs replace these in the backlog. */
+const FIELD_STARS: Star[] = (() => {
+  let s = 987654321 >>> 0;
+  const rng = () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 0xffffffff;
+  };
+  const out: Star[] = [];
+  for (let i = 0; i < 150; i++) {
+    // Uniform-ish on the sphere.
+    const ra = rng() * Math.PI * 2;
+    const dec = Math.asin(rng() * 2 - 1);
+    const magnitude = 3.0 + rng() * 1.8; // 3.0–4.8
+    out.push({
+      id: `field-${i}`,
+      name: null,
+      bayer: null,
+      equatorial: { ra, dec },
+      magnitude,
+      colorIndex: rng() * 0.9 - 0.15,
+      constellationId: null,
+    });
+  }
+  return out;
+})();
+
+const ALL_STARS: Star[] = [...STARS, ...FIELD_STARS];
+
 const PLANETS_STUB: Array<{
   id: string;
   name: string;
@@ -231,7 +260,7 @@ export const stubAstronomyProvider: AstronomyProvider = {
     const latRad = site.lat * RAD;
     const rotation = 0;
 
-    const stars: ProjectedStar[] = STARS.map((star) => {
+    const stars: ProjectedStar[] = ALL_STARS.map((star) => {
       const { az, alt } = equatorialToHorizontal(
         star.equatorial.ra,
         star.equatorial.dec,

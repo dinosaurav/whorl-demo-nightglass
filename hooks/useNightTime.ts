@@ -30,20 +30,19 @@ export interface NightTimeState {
 
 /** Manage the night window and the current scrub position for a site. */
 export function useNightTime(site: ObservingSite | null, baseUtcMs?: number): NightTimeState {
+  // Hour-round the seed so SSR markup and client hydration agree (raw
+  // Date.now() differs across them → hydration mismatches on time labels).
+  const seedBase = () => baseUtcMs ?? Math.floor(Date.now() / 3600000) * 3600000;
   const [window, setWindow] = useState<NightWindow | null>(() => {
     if (!site) return null;
     try {
-      const base = baseUtcMs ?? Date.now();
-      const w = providers.astronomy.nightWindow(site, base);
+      const w = providers.astronomy.nightWindow(site, seedBase());
       return { start: w.start, end: w.end, duration: w.end - w.start };
     } catch {
       return null;
     }
   });
-  const [time, setTime] = useState<number>(() => {
-    const base = baseUtcMs ?? Date.now();
-    return base;
-  });
+  const [time, setTime] = useState<number>(() => seedBase());
 
   const refreshFor = (s: ObservingSite, base = baseUtcMs ?? Date.now()) => {
     const w = providers.astronomy.nightWindow(s, base);

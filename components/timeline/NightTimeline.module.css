@@ -19,6 +19,20 @@
 
 .label { letter-spacing: 0.22em; }
 
+.headRight {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.hint {
+  color: var(--ink-30);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+@media (max-width: 520px) {
+  .hint { display: none; }
+}
+
 .nowBtn {
   background: transparent;
   border: 1px solid var(--panel-border);

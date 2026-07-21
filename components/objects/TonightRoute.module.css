@@ -1,7 +1,8 @@
 .toggleBtn {
   position: absolute;
   left: 1rem;
-  bottom: 1rem;
+  /* Above the timeline dock, not under it. */
+  bottom: 9.5rem;
   z-index: 11;
   background: var(--panel);
   border: 1px solid var(--panel-border);
@@ -19,8 +20,10 @@
 .wrap {
   position: absolute;
   left: 1rem;
-  bottom: 1rem;
+  bottom: 9.5rem;
   width: min(300px, calc(100% - 2rem));
+  max-height: calc(100dvh - 18rem);
+  overflow-y: auto;
   background: var(--panel);
   border: 1px solid var(--panel-border);
   border-radius: 12px;

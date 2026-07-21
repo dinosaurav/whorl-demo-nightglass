@@ -7,6 +7,11 @@
   align-items: center;
   justify-content: center;
   pointer-events: auto;
+  animation: domeIn 720ms var(--ease-out) both;
+}
+@keyframes domeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .svg {
@@ -37,10 +42,10 @@
 }
 .constellationLine {
   stroke: var(--ink-line);
+  /* User units: ~1.4–2.2px at typical dome scale. */
   stroke-width: 0.0035;
   fill: none;
   stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
 }
 .constellationFocused .constellationLine {
   stroke: var(--focus-line);
@@ -76,14 +81,16 @@
 .constellationLabel {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: 0.055;
+  /* SVG user units: CSS px == viewBox units here. Must carry a unit —
+     unitless font-size is invalid and falls back to 16 user units (screen-wide). */
+  font-size: 0.055px;
   fill: var(--star-bright);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 .planetLabel {
   font-family: var(--font-ui);
-  font-size: 0.022;
+  font-size: 0.022px;
   fill: var(--ink-70);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -94,29 +101,15 @@
 .horizonRing {
   fill: none;
   stroke: var(--ink-line);
-  stroke-width: 0.005;
-  vector-effect: non-scaling-stroke;
+  stroke-width: 0.004;
 }
 
 .cardinals {
   font-family: var(--font-ui);
-  font-size: 0.05;
+  font-size: 0.05px;
   fill: var(--ink-50);
   letter-spacing: 0.18em;
   font-weight: 600;
-}
-
-.hint {
-  position: absolute;
-  bottom: 1em;
-  right: 1.2em;
-  font-family: var(--font-ui);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink-30);
-  pointer-events: none;
-  z-index: 3;
 }
 
 @media (prefers-reduced-motion: reduce) {

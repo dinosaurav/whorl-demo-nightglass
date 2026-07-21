@@ -81,9 +81,12 @@ export default function NightTimeline({
     <div className={`${styles.wrap} ${reducedMotion ? styles.reduced : ""}`}>
       <div className={styles.head}>
         <span className={styles.label}>tonight · sunset → sunrise</span>
-        <button className={styles.nowBtn} onClick={onJumpToNow} disabled={isNow}>
-          {isNow ? "now" : "jump to now"}
-        </button>
+        <div className={styles.headRight}>
+          <span className={styles.hint}>drag sky · tap to focus</span>
+          <button className={styles.nowBtn} onClick={onJumpToNow} disabled={isNow}>
+            {isNow ? "now" : "jump to now"}
+          </button>
+        </div>
       </div>
 
       <div

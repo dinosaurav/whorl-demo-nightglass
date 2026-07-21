@@ -1,0 +1,25 @@
+.backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 120%, #2a3a5c 0%, rgba(22, 36, 63, 0.0) 55%),
+    radial-gradient(ellipse at 50% -20%, #0d1830 0%, rgba(10, 19, 38, 0.0) 60%),
+    linear-gradient(180deg, var(--sky-void) 0%, var(--sky-deep) 100%);
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--star-bright);
+  animation: backdropTwinkle 5.2s ease-in-out infinite;
+}
+
+@keyframes backdropTwinkle {
+  0%, 100% { transform: scale(1); opacity: 0.35; }
+  50% { transform: scale(1.25); opacity: 0.95; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star { animation: none; }
+}

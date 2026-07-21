@@ -12,12 +12,13 @@ import type {
 } from "@/lib/astronomy/types";
 import type { VisibilityState } from "@/lib/weather/types";
 
-/** Star size from magnitude — return radius in dome units (1.0 = full dome radius). */
+/** Star size from magnitude — return radius in dome units (1.0 = full dome radius).
+ *  Sized so the dimmest catalog stars stay clearly visible on a phone screen. */
 export function starRadius(star: Star): number {
   const m = star.magnitude;
-  // Map magnitude -1.5 (brightest) → ~0.012, +3 → ~0.002 in dome units.
-  const norm = clamp((3.5 - m) / 5, 0, 1);
-  return 0.0025 + norm * 0.01;
+  // Map magnitude -1.5 (brightest) → ~0.02, +4.8 (faintest field) → ~0.006.
+  const norm = clamp((4.8 - m) / 5.2, 0, 1);
+  return 0.006 + norm * 0.014;
 }
 
 /** Star fill color derived from B-V color index. */
@@ -69,6 +70,7 @@ export interface RenderPrimitives {
   /** Sky background gradient + veil opacities. */
   sky: {
     zenith: string;
+    mid: string;
     horizon: string;
     cloudOpacity: number;
     hazeOpacity: number;
@@ -84,10 +86,13 @@ export function buildPrimitives(
   const cos = Math.cos(rotation);
   const sin = Math.sin(rotation);
   // Rotate (x,y) around origin by `rotation` radians ccw — applied to everything together.
+  // Dome space is y-up (north = +y); SVG screen space is y-down, so y is
+  // negated here once. Everything downstream (labels, hit-testing, cardinals)
+  // works in screen space.
   const rot = (x: number, y: number) => {
     const nx = cos * x - sin * y;
     const ny = sin * x + cos * y;
-    return { x: nx, y: ny };
+    return { x: nx, y: -ny };
   };
 
   const stars = snap.stars.map((ps) => {
@@ -154,8 +159,9 @@ export function buildPrimitives(
 
   // Sky background influenced by weather. Veil opacity is what paints clouds.
   const moonBleach = visibility.moonWash;
-  const zenith = mixColor("#050811", "#1a2745", moonBleach * 0.4);
-  const horizon = mixColor("#2a3a5c", "#5a6a8f", moonBleach * 0.5);
+  const zenith = mixColor("#070c18", "#24355c", moonBleach * 0.45);
+  const mid = mixColor("#101d38", "#2c4066", moonBleach * 0.45);
+  const horizon = mixColor("#2a3a5c", "#5a6a8f", moonBleach * 0.55);
 
   return {
     stars,
@@ -164,6 +170,7 @@ export function buildPrimitives(
     planets,
     sky: {
       zenith,
+      mid,
       horizon,
       cloudOpacity: visibility.cloudOpacity,
       hazeOpacity: visibility.haze,

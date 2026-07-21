@@ -63,10 +63,13 @@ export default function SkyDome({
     const rect = svg.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
-    const r = Math.min(rect.width, rect.height) / 2 / VIEWBOX;
+    // px per viewBox unit under preserveAspectRatio="meet": the 2.2-unit
+    // viewBox is scaled to the smaller viewport dimension.
+    const r = Math.min(rect.width, rect.height) / VIEWBOX;
     const dx = (e.clientX - cx) / r;
     const dy = (e.clientY - cy) / r;
-    return { x: dx, y: -dy }; // screen y inverted vs dome y.
+    // Primitives are stored in screen space (y-down) — see buildPrimitives.
+    return { x: dx, y: dy };
   }, []);
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
@@ -138,7 +141,7 @@ export default function SkyDome({
       <svg
         ref={svgRef}
         viewBox={`-${VIEWBOX / 2} -${VIEWBOX / 2} ${VIEWBOX} ${VIEWBOX}`}
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="xMidYMid meet"
         className={`${styles.svg} ${pointerActive ? styles.dragging : ""}`}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -152,20 +155,22 @@ export default function SkyDome({
           <radialGradient id="sky-grad" cx="50%" cy="50%" r="50%">
             {primitives && (
               <>
+                {/* Deep zenith at center → luminous horizon at the rim */}
                 <stop offset="0%" stopColor={primitives.sky.zenith} />
-                <stop offset="70%" stopColor={primitives ? primitives.sky.horizon : "#16243f"} />
-                <stop offset="100%" stopColor="#050811" />
+                <stop offset="55%" stopColor={primitives.sky.mid} />
+                <stop offset="88%" stopColor={primitives.sky.horizon} />
+                <stop offset="100%" stopColor={primitives.sky.horizon} />
               </>
             )}
           </radialGradient>
           <radialGradient id="cloud-veil" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(220,225,235,0.0)" />
-            <stop offset="55%" stopColor="rgba(220,225,235,0.06)" />
-            <stop offset="100%" stopColor="rgba(200,210,230,0.18)" />
+            <stop offset="0%" stopColor="rgba(214,222,236,0.10)" />
+            <stop offset="55%" stopColor="rgba(210,218,232,0.30)" />
+            <stop offset="100%" stopColor="rgba(190,200,224,0.62)" />
           </radialGradient>
           <radialGradient id="haze-layer" cx="50%" cy="90%" r="80%">
-            <stop offset="0%" stopColor="rgba(120,140,180,0.45)" />
-            <stop offset="60%" stopColor="rgba(60,80,120,0.18)" />
+            <stop offset="0%" stopColor="rgba(126,148,190,0.55)" />
+            <stop offset="60%" stopColor="rgba(70,90,132,0.26)" />
             <stop offset="100%" stopColor="rgba(0,0,0,0)" />
           </radialGradient>
           <radialGradient id="moon-glow" cx="50%" cy="50%" r="50%">
@@ -183,6 +188,16 @@ export default function SkyDome({
         <circle cx="0" cy="0" r="1.1" fill="url(#sky-grad)" />
 
         <g clipPath="url(#dome-clip)">
+          {/* Stars + constellations dim as cloud cover thickens */}
+          <g
+            style={{
+              opacity:
+                layers.clouds && visibility
+                  ? 1 - visibility.cloudOpacity * 0.55
+                  : 1,
+              transition: reduced ? undefined : "opacity 480ms var(--ease-out)",
+            }}
+          >
           {/* Stars */}
           {primitives &&
             primitives.stars.map((s) => {
@@ -192,16 +207,28 @@ export default function SkyDome({
                 s.star.constellationId !== focusedConstellationId
                   ? styles.dimmed
                   : "";
+              const halo = s.star.magnitude < 0.6;
               return (
-                <circle
-                  key={s.star.id}
-                  cx={s.x}
-                  cy={s.y}
-                  r={s.r}
-                  fill={s.fill}
-                  className={`${styles.star} ${dim} ${styles.starTwinkle}`}
-                  data-constellation={s.star.constellationId ?? ""}
-                />
+                <g key={s.star.id} className={dim}>
+                  {halo && (
+                    <circle
+                      cx={s.x}
+                      cy={s.y}
+                      r={s.r * 2.6}
+                      fill={s.fill}
+                      opacity={0.22}
+                      className={reduced ? "" : styles.starTwinkle}
+                    />
+                  )}
+                  <circle
+                    cx={s.x}
+                    cy={s.y}
+                    r={s.r}
+                    fill={s.fill}
+                    className={`${styles.star} ${reduced ? "" : styles.starTwinkle}`}
+                    data-constellation={s.star.constellationId ?? ""}
+                  />
+                </g>
               );
             })}
 
@@ -232,6 +259,8 @@ export default function SkyDome({
                 </g>
               );
             })}
+          </g>
+          {/* end cloud-dimmed stars+lines group */}
 
           {/* Planets */}
           {primitives && layers.planets &&
@@ -313,11 +342,6 @@ export default function SkyDome({
           />
         )}
       </svg>
-
-      {/* Helm guide */}
-      <div className={styles.hint} aria-hidden="true">
-        drag to rotate · tap to focus
-      </div>
     </div>
   );
 }
@@ -358,10 +382,11 @@ function FocusCluster({
 }
 
 function Cardinals() {
+  // Screen space: y-down. North at top.
   const firms = [
-    { l: "N", x: 0, y: 1.06 },
+    { l: "N", x: 0, y: -1.06 },
     { l: "E", x: 1.06, y: 0 },
-    { l: "S", x: 0, y: -1.06 },
+    { l: "S", x: 0, y: 1.06 },
     { l: "W", x: -1.06, y: 0 },
   ];
   return (

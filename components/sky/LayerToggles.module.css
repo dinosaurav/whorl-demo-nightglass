@@ -1,12 +1,9 @@
 .wrap {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  z-index: 11;
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  max-width: min(280px, calc(100% - 2rem));
+  justify-content: flex-end;
+  /* Positioning is owned by the shell (page.module.css .layerRail). */
 }
 .toggle {
   background: var(--panel);
@@ -32,7 +29,3 @@
   transition: background var(--dur-fast), box-shadow var(--dur-fast);
 }
 .toggle.on .dot { background: var(--accent-strong); box-shadow: 0 0 8px var(--accent); }
-
-@media (max-width: 520px) {
-  .wrap { top: auto; bottom: 13rem; max-width: calc(100% - 2rem); }
-}

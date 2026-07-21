@@ -1,8 +1,11 @@
 .panel {
   position: absolute;
-  top: 1rem;
+  /* Sits below the layer-toggles rail (rail ~3rem tall at top-right). */
+  top: 4.6rem;
   right: 1rem;
   width: min(340px, calc(100% - 2rem));
+  max-height: calc(100dvh - 14rem);
+  overflow-y: auto;
   background: var(--panel);
   border: 1px solid var(--panel-border);
   border-radius: 14px;
@@ -103,5 +106,13 @@
 .starMag { color: var(--ink-50); font-variant-numeric: tabular-nums; }
 
 @media (max-width: 520px) {
-  .panel { top: auto; bottom: 1rem; right: 1rem; left: 1rem; width: auto; }
+  /* Bottom sheet above the timeline dock, not under it. */
+  .panel {
+    top: auto;
+    bottom: 9.5rem;
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+    max-height: 42dvh;
+  }
 }

@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import Wordmark from "@/components/brand/Wordmark";
-import SkyDome from "@/components/sky/SkyDome";
+import SkyBackdrop from "@/components/sky/SkyBackdrop";
 import WeatherLayer from "@/components/sky/WeatherLayer";
 import LayerToggles, { type SkyLayers } from "@/components/sky/LayerToggles";
 import NightTimeline from "@/components/timeline/NightTimeline";
@@ -17,11 +18,23 @@ import type { SkySnapshot } from "@/lib/astronomy/types";
 import type { NightWeatherCurve, VisibilityState } from "@/lib/weather/types";
 import styles from "./page.module.css";
 
+// The dome is time-dependent (positions derive from the clock), so SSR would
+// never match client hydration. Render a static starfield on the server and
+// swap in the interactive dome on mount — no hydration mismatch, and the
+// landing still shows a sky instantly with no permission prompt.
+const SkyDome = dynamic(() => import("@/components/sky/SkyDome"), {
+  ssr: false,
+  loading: () => <SkyBackdrop />,
+});
+
 const DEFAULT_SITE = providers.location.presets()[0];
+
+// Hour-rounded seed keeps any SSR markup (timeline labels) identical to the
+// client's first render; effects recompute with the exact clock after mount.
+const seedNow = () => Math.floor(Date.now() / 3600000) * 3600000;
 
 export default function Home() {
   const [site, setSite] = useState<ObservingSite>(DEFAULT_SITE);
-  const [showSample, setShowSample] = useState(false);
   const [locationOpen, setLocationOpen] = useState(false);
   const [routeOpen, setRouteOpen] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
@@ -34,7 +47,6 @@ export default function Home() {
     planets: true,
   });
   const [reduced, setReduced] = useState(false);
-  const [skyReady, setSkyReady] = useState(false);
 
   useEffect(() => {
     const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -46,26 +58,14 @@ export default function Home() {
 
   const night = useNightTime(site);
 
-  // Snapshot + weather per current site & time.
   const [curve, setCurve] = useState<NightWeatherCurve | null>(null);
-  const [snapshot, setSnapshot] = useState<SkySnapshot | null>(() => {
-    return providers.astronomy.skyAt(DEFAULT_SITE, Date.now());
-  });
-  const [visibility, setVisibility] = useState<VisibilityState | null>(() => {
-    const snap = providers.astronomy.skyAt(DEFAULT_SITE, Date.now());
-    return {
-      cloudOpacity: 0.3,
-      haze: 0.12,
-      moonWash: snap.moon.illumination,
-      precipRisk: 0.05,
-      clarity: 0.65,
-      mocked: true,
-    };
-  });
+  const [snapshot, setSnapshot] = useState<SkySnapshot | null>(() =>
+    providers.astronomy.skyAt(DEFAULT_SITE, seedNow())
+  );
+  const [visibility, setVisibility] = useState<VisibilityState | null>(null);
   const [scrubbing, setScrubbing] = useState(false);
-  const computeTimer = useRef<number | null>(null);
 
-  // Recompute whenever site/time/rotation(rotation doesn't affect positions) changes.
+  // Weather curve per site + night window.
   useEffect(() => {
     let cancelled = false;
     async function run() {
@@ -84,18 +84,18 @@ export default function Home() {
     };
   }, [site.id, night.window?.start, night.window?.end]);
 
+  // Sky snapshot + blended visibility per site + scrubbed instant.
   useEffect(() => {
     if (!night.time) return;
     const snap = providers.astronomy.skyAt(site, night.time);
     setSnapshot(snap);
-    setSkyReady(true);
     if (curve) {
-      const v = providers.weather.sampleAt(curve, night.time, snap.moon.illumination);
-      setVisibility(v);
+      setVisibility(
+        providers.weather.sampleAt(curve, night.time, snap.moon.illumination)
+      );
     }
   }, [site.id, night.time, curve]);
 
-  // Cloud sparkline for the timeline (peak samples simplified).
   const cloudCurve = useMemo(() => {
     if (!curve) return null;
     return curve.samples.map((s) => ({ t: s.time, cloud: s.cloudCover }));
@@ -109,9 +109,7 @@ export default function Home() {
   const onScrubStart = useCallback(() => setScrubbing(true), []);
   const onScrubEnd = useCallback(() => setScrubbing(false), []);
 
-  // "Explore sample sky" cycles the rote between presets.
   const exploreSample = () => {
-    setShowSample(true);
     const presets = providers.location.presets();
     const i = presets.findIndex((p) => p.id === site.id);
     const next = presets[(i + 1) % presets.length];
@@ -119,9 +117,11 @@ export default function Home() {
   };
 
   return (
-    <main className={styles.hero}>
-      {/* Full-bleed sky dome */}
-      <div className={styles.skyStage}>
+    <main className={styles.page}>
+      {/* First viewport: exactly one screen, self-contained composition */}
+      <section className={styles.viewport}>
+        {/* Full-bleed sky dome */}
+        <div className={styles.skyStage}>
         <SkyDome
           snapshot={snapshot}
           visibility={visibility}
@@ -139,10 +139,10 @@ export default function Home() {
         />
       </div>
 
-      {/* Sky dim gradient for text legibility at top-left */}
+      {/* Legibility gradient over the sky (never blocks pointer input) */}
       <div className={styles.skyShade} aria-hidden="true" />
 
-      {/* Layer toggles */}
+      {/* Layer toggles — top right */}
       <div className={styles.layerRail}>
         <LayerToggles layers={layers} onChange={setLayers} />
       </div>
@@ -151,7 +151,8 @@ export default function Home() {
       <section className={styles.heroCopy}>
         <Wordmark size="lg" tagline />
         <h1 className={styles.headline}>
-          Tonight, the sky above <span className={styles.placeName}>{site.shortName ?? site.name}</span>
+          Tonight, the sky above{" "}
+          <span className={styles.placeName}>{site.shortName ?? site.name}</span>
         </h1>
         <p className={styles.support}>
           An explorable star chart for your corner of the night — drag the dome,
@@ -203,7 +204,17 @@ export default function Home() {
         />
       </div>
 
-      {/* Footer honesty — out of first viewport */}
+      {/* Location modal */}
+      <LocationFlow
+        open={locationOpen}
+        onClose={() => setLocationOpen(false)}
+        onSelectSite={setSite}
+        currentSite={site}
+      />
+      </section>
+      {/* end first viewport */}
+
+      {/* Footer honesty — in normal flow below the fold */}
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
           <div className={styles.footerBrand}>
@@ -237,20 +248,6 @@ export default function Home() {
           </p>
         </div>
       </footer>
-
-      {/* Location modal */}
-      <LocationFlow
-        open={locationOpen}
-        onClose={() => setLocationOpen(false)}
-        onSelectSite={setSite}
-        currentSite={site}
-      />
-
-      {showSample && !routeOpen && (
-        <button className={styles.routeHint} onClick={() => setRouteOpen(true)}>
-          see tonight's route
-        </button>
-      )}
     </main>
   );
 }
