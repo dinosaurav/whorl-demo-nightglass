@@ -14,7 +14,7 @@
 }
 
 .lg .mark {
-  font-size: clamp(2.4rem, 8vw, 5.2rem);
+  font-size: clamp(1.7rem, 4.2vw, 2.9rem);
 }
 .sm .mark {
   font-size: 1rem;

@@ -41,6 +41,8 @@ export default function SkyDome({
   const [pointerActive, setPointerActive] = useState(false);
   const [hoverId, setHoverId] = useState<string | null>(null);
   const lastAngle = useRef<number | null>(null);
+  const downPos = useRef<{ x: number; y: number } | null>(null);
+  const dragMoved = useRef(false);
   const prefersReducedMotion = useRef(false);
 
   useEffect(() => {
@@ -74,13 +76,31 @@ export default function SkyDome({
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     setPointerActive(true);
-    lastAngle.current = Math.atan2(e.clientY, e.clientX);
+    // Baseline the angle relative to the dome center — using raw clientX/Y
+    // (screen origin) made the first drag delta huge, lurching the sky.
+    const svg = svgRef.current;
+    if (svg) {
+      const rect = svg.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      lastAngle.current = Math.atan2(e.clientY - cy, e.clientX - cx);
+    } else {
+      lastAngle.current = null;
+    }
+    downPos.current = { x: e.clientX, y: e.clientY };
+    dragMoved.current = false;
     (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
   }, []);
 
   const onPointerMove = useCallback(
     (e: React.PointerEvent) => {
       if (pointerActive && onChangeRotation) {
+        // Track movement so we can tell a drag from a tap — the synthetic
+        // click after a drag should NOT focus a constellation.
+        if (downPos.current) {
+          const dpx = Math.hypot(e.clientX - downPos.current.x, e.clientY - downPos.current.y);
+          if (dpx > 5) dragMoved.current = true;
+        }
         const svg = svgRef.current;
         if (svg) {
           const rect = svg.getBoundingClientRect();
@@ -101,7 +121,7 @@ export default function SkyDome({
           setHoverId(null);
           return;
         }
-        const id = hitTestConstellation(primitives, p.x, p.y, 0.09);
+        const id = hitTestConstellation(primitives, p.x, p.y);
         setHoverId(id);
       }
     },
@@ -117,6 +137,9 @@ export default function SkyDome({
   const onClick = useCallback(
     (e: React.MouseEvent) => {
       if (!onFocusConstellation) return;
+      // Suppress focus when the pointer just finished a drag — otherwise
+      // releasing a drag would snap the inspector open at the release point.
+      if (dragMoved.current) return;
       const fake = {
         clientX: e.clientX,
         clientY: e.clientY,
@@ -126,10 +149,10 @@ export default function SkyDome({
         onFocusConstellation(null);
         return;
       }
-      const id = inDome(p.x, p.y)
-        ? hitTestConstellation(primitives, p.x, p.y, 0.09)
-        : null;
-      onFocusConstellation(id ?? null);
+      // Click on empty space (no constellation within tolerance) just clears
+      // focus — it never lurches to a random constellation.
+      const id = inDome(p.x, p.y) ? hitTestConstellation(primitives, p.x, p.y) : null;
+      onFocusConstellation(id);
     },
     [onFocusConstellation, primitives, pointerToDome]
   );
@@ -326,8 +349,14 @@ export default function SkyDome({
         {/* Horizon ring */}
         <circle cx="0" cy="0" r="1" className={styles.horizonRing} />
 
-        {/* Cardinal markers */}
-        <Cardinals />
+        {/* Cardinal markers — rotate with the sky so the rose tracks the star field
+            (drag = spin the whole dome, horizon directions included). */}
+        <g
+          transform={`rotate(${(-rotation * 180 / Math.PI).toFixed(3)})`}
+          style={{ transition: reduced ? undefined : "transform 60ms linear" }}
+        >
+          <Cardinals />
+        </g>
 
         {/* Cloud veil (outside dome-clip so it can wash the disc edges) */}
         {primitives && layers.clouds && visibility && visibility.cloudOpacity > 0.02 && (

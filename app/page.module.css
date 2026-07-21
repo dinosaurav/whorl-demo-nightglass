@@ -20,26 +20,32 @@
   z-index: 1;
 }
 
+/* Scrim is INTENTIONALLY local: a soft darken behind the top-left text and
+   the bottom dock only — most of the dome stays clear, draggable, uncovered. */
 .skyShade {
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(5, 8, 17, 0.55) 0%, rgba(5, 8, 17, 0) 30%),
-    linear-gradient(90deg, rgba(5, 8, 17, 0.5) 0%, rgba(5, 8, 17, 0.0) 38%),
-    linear-gradient(0deg, rgba(5, 8, 17, 0.75) 0%, rgba(5, 8, 17, 0) 22%);
+    radial-gradient(
+      ellipse 42% 38% at 18% 14%,
+      rgba(5, 8, 17, 0.72) 0%,
+      rgba(5, 8, 17, 0.42) 45%,
+      rgba(5, 8, 17, 0) 100%
+    ),
+    linear-gradient(0deg, rgba(5, 8, 17, 0.72) 0%, rgba(5, 8, 17, 0) 18%);
 }
 
 .heroCopy {
   position: absolute;
   z-index: 5;
-  top: clamp(1.4rem, 4vw, 3rem);
-  left: clamp(1.4rem, 4vw, 3.5rem);
-  max-width: min(540px, 70vw);
+  top: clamp(1.1rem, 3vw, 2rem);
+  left: clamp(1.1rem, 3vw, 2.2rem);
+  max-width: min(360px, 64vw);
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.45rem;
   animation: heroIn 900ms var(--ease-out) both;
   /* Text must not swallow sky drags — only the buttons are interactive. */
   pointer-events: none;
@@ -53,9 +59,9 @@
 .headline {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(1.8rem, 4.4vw, 3.4rem);
-  line-height: 1.04;
-  margin: 0.4rem 0 0;
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  line-height: 1.08;
+  margin: 0.3rem 0 0;
   color: var(--star-bright);
   letter-spacing: 0.005em;
 }

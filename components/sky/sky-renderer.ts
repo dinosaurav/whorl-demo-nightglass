@@ -204,27 +204,19 @@ export function inDome(x: number, y: number): boolean {
   return x * x + y * y <= 1;
 }
 
-/** Hit-test a screen-space pointer → constellation id, if any. */
+/** Hit-test a screen-space pointer → constellation id, if any.
+ *  Tolerance is intentionally tight (in user units, 1.0 = dome radius):
+ *  clicking empty night should clear focus, not snap to a random figure. */
 export function hitTestConstellation(
   primitives: RenderPrimitives,
   domeX: number,
-  domeY: number,
-  tolerance: number
+  domeY: number
 ): string | null {
-  let best: string | null = null;
-  let bestDist = tolerance;
-  for (const c of primitives.constellations) {
-    if (!c.visible) continue;
-    const d = Math.hypot(c.centroid.x - domeX, c.centroid.y - domeY);
-    if (d < bestDist) {
-      bestDist = d;
-      best = c.id;
-    }
-  }
-  if (best) return best;
-  // Try nearest star → its constellation.
+  // 1. Prefer an actual star belonging to a constellation (~20px at the
+  //    dome's typical scale) — feels like you tapped the star itself.
+  const STAR_TOL = 0.024;
   let starBest: string | null = null;
-  let starDist = tolerance * 0.5;
+  let starDist = STAR_TOL;
   for (const s of primitives.stars) {
     if (!s.aboveHorizon) continue;
     if (!s.star.constellationId) continue;
@@ -234,5 +226,20 @@ export function hitTestConstellation(
       starBest = s.star.constellationId;
     }
   }
-  return starBest;
+  if (starBest) return starBest;
+  // 2. Else, near a constellation's label centroid (~24px) — useful for the
+  //    single-star constellations (Vega, Sirius…) whose "star" sits on the
+  //    label anchor and the user is aiming at the label.
+  const CENT_TOL = 0.03;
+  let best: string | null = null;
+  let bestDist = CENT_TOL;
+  for (const c of primitives.constellations) {
+    if (!c.visible) continue;
+    const d = Math.hypot(c.centroid.x - domeX, c.centroid.y - domeY);
+    if (d < bestDist) {
+      bestDist = d;
+      best = c.id;
+    }
+  }
+  return best;
 }

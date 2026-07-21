@@ -149,14 +149,13 @@ export default function Home() {
 
       {/* Hero brand + headline + CTAs (first-viewport composition) */}
       <section className={styles.heroCopy}>
-        <Wordmark size="lg" tagline />
+        <Wordmark size="lg" tagline={false} />
         <h1 className={styles.headline}>
-          Tonight, the sky above{" "}
+          Tonight above{" "}
           <span className={styles.placeName}>{site.shortName ?? site.name}</span>
         </h1>
         <p className={styles.support}>
-          An explorable star chart for your corner of the night — drag the dome,
-          scrub the hours, and find when the clouds will clear.
+          Drag the dome, scrub the hours, find when the clouds clear.
         </p>
         <div className={styles.ctas}>
           <button className={styles.primary} onClick={() => setLocationOpen(true)}>
